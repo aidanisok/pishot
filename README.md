@@ -2,6 +2,7 @@
 HTTP Raspberry Pi Camera Snapshot Service
 
 Edit the rc.local to file to launch the boot.sh file on system boot.
+
 <code>sudo nano /etc/rc.local</code>
 
 <code>/home/pi/piscreen/boot.sh</code>
