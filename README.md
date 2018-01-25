@@ -5,7 +5,7 @@ Edit the rc.local to file to launch the boot.sh file on system boot.
 
 <code>sudo nano /etc/rc.local</code>
 
-<code>/home/pi/piscreen/boot.sh</code>
+<code>/home/pi/pishot/boot.sh &</code>
 
 Before powering on the Raspberry Pi ensure that the HDMI and Ethernet are plugged in, and the HDMI input device is powered on and is emitting video signal before powering on the Raspberry Pi by plugging in the MicroUSB.
 
