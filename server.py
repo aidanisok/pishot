@@ -79,6 +79,7 @@ def UpdateScreenshot():
 
 
 def InitialiseCamera():
+    global RaspberryCamera
     while True:
         print('Initialising HDMI -> CSI2 Bridge')
         try:
