@@ -19,7 +19,10 @@ HTTP_PORT = 8082
 #WIDTH = 1280
 #HEIGHT = 720
 
-RaspberryCamera = picamera.PiCamera()
+
+RaspberryCamera = None
+
+img64 = None
 
 class StreamingHttpHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
@@ -33,10 +36,10 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             return
         elif self.path == '/current_frame.base64':
             content_type = 'text/plain'
-            content = self.GetScreenshot()
+            content = img64
         elif self.path == '/current.html':
             content_type = 'text/html; charset=utf-8'
-            img = self.GetScreenshot()
+            img = img64
             content = '<html><img height="720" width="1280" src="data:image/png;base64, {}" /></html>'\
                 .format(img).replace("b'", "",).replace("'", "")
             content = content.encode('utf-8')
@@ -62,15 +65,38 @@ class StreamingHttpServer(HTTPServer):
         super(StreamingHttpServer, self).__init__(
             ('', HTTP_PORT), StreamingHttpHandler)
 
-def do_nothing():
-    return;
 
-def main():
-    print('Initialising HDMI -> CSI2 Bridge')
+def UpdateScreenshot():
+    try:
+        my_stream = io.BytesIO()
+        RaspberryCamera.capture(my_stream, 'jpeg')
+        img = base64.b64encode(my_stream.getvalue())
+        my_stream.close()
+        img64 = img
+    except PiCameraRuntimeError:
+        print('PiCamera runtime error, attempting to reinitialize..')
+        InitialiseCamera()
+
+
+def InitialiseCamera():
+    while True:
+        print('Initialising HDMI -> CSI2 Bridge')
+        try:
+            RaspberryCamera = picamera.PiCamera()            
+            break
+        except PiCameraMMALError:
+            print('Failure to initialise, trying again in 5s..')
+            sleep(5)
+            continue
+
     RaspberryCamera.resolution = (WIDTH, HEIGHT)
     RaspberryCamera.start_preview()
     sleep(1)
     print('HDMI -> CSI2 Bridge Initialised')
+
+def main():
+
+    InitialiseCamera()
 
     print('Initialising HTTP on port 8082')
     http_server = StreamingHttpServer()
@@ -80,7 +106,8 @@ def main():
         http_thread.start()
         print('Application started, listening...')
         while(True):
-            do_nothing()
+            UpdateScreenshot()
+            sleep(1)
     except KeyboardInterrupt:
         pass
     finally:
