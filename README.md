@@ -5,7 +5,7 @@ Edit the rc.local to file to launch the boot.sh file on system boot.
 
 <code>sudo nano /etc/rc.local</code>
 
-Ensure to compile the boot.sh file using 
+Ensure to mark the boot.sh file as executable using 
 
 <code>chmod -x boot.sh</code>
 
