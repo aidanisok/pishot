@@ -75,6 +75,8 @@ def UpdateScreenshot():
         my_stream.close()
         img64 = img
     except picamera.PiCameraRuntimeError:
+        global RaspberryCamera
+        RaspberryCamera.close()
         print('PiCamera runtime error, attempting to reinitialize..')
         InitialiseCamera()
 
@@ -99,6 +101,10 @@ def InitialiseCamera():
 def main():
 
     InitialiseCamera()
+
+    while (True):
+        UpdateScreenshot()
+        sleep(.5)
 
     print('Initialising HTTP on port 8082')
     http_server = StreamingHttpServer()
