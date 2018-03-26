@@ -67,6 +67,7 @@ class StreamingHttpServer(HTTPServer):
 
 
 def UpdateScreenshot():
+    global img64
     try:
         my_stream = io.BytesIO()
         RaspberryCamera.capture(my_stream, 'jpeg')
