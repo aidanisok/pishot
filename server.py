@@ -44,7 +44,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
                 .format(img).replace("b'", "",).replace("'", "")
             content = content.encode('utf-8')
         else:
-            self.send_error("404", 'Not found bro')
+            self.send_error(404, 'Not found bro')
             return
 
         self.send_response(200)
