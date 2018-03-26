@@ -73,7 +73,7 @@ def UpdateScreenshot():
         img = base64.b64encode(my_stream.getvalue())
         my_stream.close()
         img64 = img
-    except PiCameraRuntimeError:
+    except picamera.PiCameraRuntimeError:
         print('PiCamera runtime error, attempting to reinitialize..')
         InitialiseCamera()
 
@@ -82,9 +82,9 @@ def InitialiseCamera():
     while True:
         print('Initialising HDMI -> CSI2 Bridge')
         try:
-            RaspberryCamera = picamera.PiCamera()            
+            RaspberryCamera = picamera.PiCamera()
             break
-        except PiCameraMMALError:
+        except picamera.PiCameraMMALError:
             print('Failure to initialise, trying again in 5s..')
             sleep(5)
             continue
@@ -107,7 +107,7 @@ def main():
         print('Application started, listening...')
         while(True):
             UpdateScreenshot()
-            sleep(1)
+            sleep(.75)
     except KeyboardInterrupt:
         pass
     finally:
