@@ -25,6 +25,10 @@ RaspberryCamera = None
 img64 = None
 
 class StreamingHttpHandler(BaseHTTPRequestHandler):
+    def setup(self):
+        BaseHTTPServer.BaseHTTPRequestHandler.setup(self)
+        self.request.settimeout(5)
+    
     def do_HEAD(self):
         self.do_GET()
 
@@ -87,6 +91,7 @@ def InitialiseCamera():
         print('Initialising HDMI -> CSI2 Bridge')
         try:
             RaspberryCamera = picamera.PiCamera()
+            sleep(2.5)
             break
         except picamera.PiCameraMMALError:
             print('Failure to initialise, trying again in 5s..')
@@ -99,12 +104,12 @@ def InitialiseCamera():
     print('HDMI -> CSI2 Bridge Initialised')
 
 def main():
+    
+    sleep(5)
 
     InitialiseCamera()
-
-    while (True):
-        UpdateScreenshot()
-        sleep(.5)
+    
+    sleep(2.5)
 
     print('Initialising HTTP on port 8082')
     http_server = StreamingHttpServer()
@@ -115,7 +120,7 @@ def main():
         print('Application started, listening...')
         while(True):
             UpdateScreenshot()
-            sleep(.75)
+            sleep(.85)
     except KeyboardInterrupt:
         pass
     finally:
