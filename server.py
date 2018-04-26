@@ -25,10 +25,6 @@ RaspberryCamera = None
 img64 = None
 
 class StreamingHttpHandler(BaseHTTPRequestHandler):
-    def setup(self):
-        BaseHTTPServer.BaseHTTPRequestHandler.setup(self)
-        self.request.settimeout(5)
-    
     def do_HEAD(self):
         self.do_GET()
 
@@ -68,6 +64,7 @@ class StreamingHttpServer(HTTPServer):
     def __init__(self):
         super(StreamingHttpServer, self).__init__(
             ('', HTTP_PORT), StreamingHttpHandler)
+        
 
 
 def UpdateScreenshot():
@@ -100,7 +97,7 @@ def InitialiseCamera():
 
     RaspberryCamera.resolution = (WIDTH, HEIGHT)
     RaspberryCamera.start_preview()
-    sleep(1)
+    sleep(3.5)
     print('HDMI -> CSI2 Bridge Initialised')
 
 def main():
@@ -109,8 +106,6 @@ def main():
 
     InitialiseCamera()
     
-    sleep(2.5)
-
     print('Initialising HTTP on port 8082')
     http_server = StreamingHttpServer()
     http_thread = Thread(target=http_server.serve_forever)
